@@ -3,8 +3,8 @@
 }
 
 .App-header {
-  background-color: teal;
-  height: 150px;
+  background-color: grey;
+  height: 50px;
   padding: 20px;
   color: white;
 }
@@ -15,5 +15,17 @@
 
 .App-intro {
   font-size: large;
+}
+
+#chartholder {
+	position: relative;
+	top:50px;
+}
+
+.axis line {
+  fill: none;
+  stroke: #D4D8DA;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
 }
 
