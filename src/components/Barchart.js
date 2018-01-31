@@ -78,15 +78,25 @@ export default class Barchart extends Component{
        	.attr('fill', 'lightblue');
        	
        	//Label Text for axes
+       	var textLabel;
+       	if (this.props.flag === 0){
+       		textLabel = "Education";
+
+       	} else if(this.props.flag === 1){
+       		textLabel = "Race";
+
+       	}
        	g.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate("+ (-margin.left - 10) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-            .text("Education");
+       	.classed('labeltext',true)
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (-margin.left - 30) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
+        .text(textLabel);
 
         g.append("text")
-            .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-            .attr("transform", "translate("+ (width/2) +","+(height+(padding/2))+")")  // centre below axis
-            .text("Count");
+        .classed('labeltext',true)
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (width/2) +","+(height+(padding/2))+")")  // centre below axis
+        .text("Count");
 		
 	}
 

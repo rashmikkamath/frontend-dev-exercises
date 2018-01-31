@@ -67,13 +67,15 @@ export default class App extends Component {
                     {category:"Blacks", per_over_50k:.34}
     ];
 
-    var data;
+    var data,flag;
 
     if (this.state.selectedOption === "education"){
-      data = fauxEducationData
+      data = fauxEducationData;
+      flag = 0;
 
     } else if(this.state.selectedOption === "race"){
       data = fauxRaceData;
+      flag = 1;
 
     }    
     
@@ -89,7 +91,7 @@ export default class App extends Component {
               <label><input type="radio"  name="dataset" value="race" checked={this.state.selectedOption === 'race'} onChange={this.handleOptionChange}/> Race</label>
             </form>
           </div>
-          <Barchart data={data}/>
+          <Barchart data={data} flag={flag}/>
           
         </div>
       </div>

@@ -53,6 +53,14 @@ label {
 	padding-right: 8px;
 	padding-left: 2px;
 }
+text {
+	font: 12px sans-serif;
+     
+}
+.labeltext{
+	font-size: 16px;
+}
+
 
 
 
