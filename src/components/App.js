@@ -8,7 +8,11 @@ import Barchart from './Barchart.js';
 export default class App extends Component {
   constructor(props){
     super(props);
-    this.state = {};
+    this.state = {
+      
+      selectedOption: 'education'
+    };
+    this.handleOptionChange = this.handleOptionChange.bind(this);
   }
 
   componentWillMount() {
@@ -27,6 +31,13 @@ export default class App extends Component {
     });   
   }
 
+  handleOptionChange (changeEvent){
+    
+    this.setState({
+      selectedOption : changeEvent.target.value
+    })
+
+  }
 
   render() {
     //handle cases where data has error loading or taking time to load
@@ -44,19 +55,43 @@ export default class App extends Component {
         .entries(this.state.chartData);*/
 
     //Design UI with faux data
-    var fauxData = [{category:"Bachelors", per_over_50k:78},
-                    {category:"Associates", per_over_50k:67},
-                    {category:"No degree", per_over_50k:34},
-                    {category:"High School", per_over_50k:44},
-                    {category:"Some College", per_over_50k:4}
+    var fauxEducationData = [{category:"Bachelors", per_over_50k:.78},
+                    {category:"Associates", per_over_50k:.67},
+                    {category:"No degree", per_over_50k:.34},
+                    {category:"High School", per_over_50k:.44},
+                    {category:"Some College", per_over_50k:.4}
     ];
+
+    var fauxRaceData = [{category:"Asian-Pac-Islander", per_over_50k:.98},
+                    {category:"Whites", per_over_50k:.67},
+                    {category:"Blacks", per_over_50k:.34}
+    ];
+
+    var data;
+
+    if (this.state.selectedOption === "education"){
+      data = fauxEducationData
+
+    } else if(this.state.selectedOption === "race"){
+      data = fauxRaceData;
+
+    }    
     
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">Welcome</h1>
         </header>
-        <Barchart data={fauxData}/>
+        <div id="choice">
+          <div className="choice-button">
+            <form>
+              <label><input type="radio"  name="dataset" value="education" checked={this.state.selectedOption === 'education'} onChange={this.handleOptionChange}/> Education</label>
+              <label><input type="radio"  name="dataset" value="race" checked={this.state.selectedOption === 'race'} onChange={this.handleOptionChange}/> Race</label>
+            </form>
+          </div>
+          <Barchart data={data}/>
+          
+        </div>
       </div>
     );
   }
