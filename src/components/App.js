@@ -27,12 +27,10 @@ export default class App extends Component {
         });
         self.setState({chartData:data});
       }
-
     });   
   }
 
   handleOptionChange (changeEvent){
-    
     this.setState({
       selectedOption : changeEvent.target.value
     })
@@ -48,52 +46,62 @@ export default class App extends Component {
     if(!this.state.chartData){
         return <div>Loading</div>
     }
-    //manipulate data to extract required info to send to Barchart component
-    /*var dataForChart = d3.nest()
-        .key(function(d) { return d.education_level; })
-        .key(function(d){return d.over_50k})
-        .entries(this.state.chartData);*/
+    
+    var combinedData = {}, groupedData, categoryArr, percentArr = [], option;
 
-    //Design UI with faux data
-    var fauxEducationData = [{category:"Bachelors", per_over_50k:.78},
-                    {category:"Associates", per_over_50k:.67},
-                    {category:"No degree", per_over_50k:.34},
-                    {category:"High School", per_over_50k:.44},
-                    {category:"Some College", per_over_50k:.4}
-    ];
-
-    var fauxRaceData = [{category:"Asian-Pac-Islander", per_over_50k:.98},
-                    {category:"Whites", per_over_50k:.67},
-                    {category:"Blacks", per_over_50k:.34}
-    ];
-
-    var data,flag;
-
+    //manipulate data to extract required info to send to Barchart component according to selected option-Education/Race
     if (this.state.selectedOption === "education"){
-      data = fauxEducationData;
-      flag = 0;
+      groupedData = d3.nest()
+      .key(function(d){return d.education_level;})
+      .key(function(d){return d.over_50k;})
+      .object(this.state.chartData);
+    
+      option = 0;
 
     } else if(this.state.selectedOption === "race"){
-      data = fauxRaceData;
-      flag = 1;
+      groupedData = d3.nest()
+      .key(function(d){return d.race;})
+      .key(function(d){return d.over_50k;})
+      .object(this.state.chartData);
 
-    }    
+      option = 1;
+    }  
+
+    //store the category names
+    categoryArr = Object.keys(groupedData);
+
+     //calculate and store percent of each category
+    Object.keys(groupedData).forEach(function(d){
+      percentArr.push(groupedData[d]["1"].length /(groupedData[d]["0"].length+groupedData[d]["1"].length));
+    });
+   
+    //structure data for component 
+    combinedData= categoryArr.map(function(x,i){return{"category":x , "per_over_50k":percentArr[i]}});
     
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome</h1>
-        </header>
-        <div id="choice">
-          <div className="choice-button">
-            <form>
-              <label><input type="radio"  name="dataset" value="education" checked={this.state.selectedOption === 'education'} onChange={this.handleOptionChange}/> Education</label>
-              <label><input type="radio"  name="dataset" value="race" checked={this.state.selectedOption === 'race'} onChange={this.handleOptionChange}/> Race</label>
-            </form>
+        <nav className="navbar navbar-default ">
+          <span className="navbar-text text-center">
+            Welcome
+          </span>
+        </nav>
+        <main role="main" className="container">
+        <div className="row"></div>
+          <div id="choice" className="row">
+              <div className=" col text-center choice-button justify-content-md-center">
+                <form>
+                  <div className="checkbox">
+                    <label><input type="radio" value="education" checked={this.state.selectedOption === 'education'} onChange={this.handleOptionChange}/> Education</label>
+                  </div>
+                  <div className="checkbox">
+                    <label><input className ="checkbox" type="radio" value="race" checked={this.state.selectedOption === 'race'} onChange={this.handleOptionChange}/> Race</label>
+                  </div>
+                </form>
+                <Barchart data={combinedData} flag={option}/>
+              </div>
           </div>
-          <Barchart data={data} flag={flag}/>
-          
-        </div>
+          <div className="row"></div>
+        </main>
       </div>
     );
   }
