@@ -12,19 +12,20 @@ export default class Main extends Component{
         selectedOption: 'education'
       };
       this.handleChange = this.handleChange.bind(this);
-  	}
+  }
 
-  	//handle the click of checkbox
-	handleChange (changeEvent){
+  //handle the click of checkbox
+  handleChange (changeEvent){
 		this.setState({
 			selectedOption : changeEvent.target.value
 		});
 	}
 
 	render(){
-
-	//required variable declarations    
-    var combinedData = {}, groupedData, categoryArr, percentArr = [], option;
+    
+    //required variable declarations    
+    var combinedData = {}, groupedData, categoryArr, percentArr = [], option,
+    labelText = d3.keys(this.props.data[0]).filter(function(key) { return (key === "education_level" || key === "count") });
 
     //manipulate data to extract required info to send to Barchart component according to selected option-Education/Race
     if (this.state.selectedOption === "education"){
@@ -43,7 +44,6 @@ export default class Main extends Component{
 
       option = 1;
     }  
-
     //store the category names
     categoryArr = Object.keys(groupedData);
 
@@ -53,16 +53,15 @@ export default class Main extends Component{
     });
    
     //structure data for component 
-    combinedData= categoryArr.map(function(x,i){return{"category":x , "per_over_50k":percentArr[i]}});
+    combinedData= categoryArr.map(function(x,i){return{"category":x , "per_over_50k":percentArr[i], "labels":labelText}});
     
 		return(
 			<main role="main" className="container">
 				<div className=" col text-center choice-button justify-content-md-center">
 					<Checkboxgrp  selectedOption={this.state.selectedOption} handleOptionChange={this.handleChange}/>
-                	<Barchart data={combinedData} flag={option}/>
-              	</div>  		
-          	</main>
-			
+          <Barchart data={combinedData} flag={option}/>
+        </div>  		
+      </main>
 		);
 	}
 }

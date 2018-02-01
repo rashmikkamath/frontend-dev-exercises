@@ -24,8 +24,11 @@ nav .navbar-text {
 }
 
 form {
-	margin-top:20px;
+	margin-top:100px;
+	
 }
+
+
 
 form label {
 	padding-right: 10px;
@@ -37,6 +40,10 @@ text {
 
 g {
 	overflow: visible;
+}
+
+#chartholder {
+	
 }
 
 #svg-chart {

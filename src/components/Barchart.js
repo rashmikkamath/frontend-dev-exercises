@@ -4,15 +4,20 @@ import PropTypes from 'prop-types';
 
 
 export default class Barchart extends Component{
+    constructor(props){
+      super(props)
+      this.createBarChart = this.createBarChart.bind(this)
+    }
 
 	componentDidMount(){
 
-		this.setContext();
+		this.createBarChart();
 	}
 
-	setContext() {
+    //pass reins to d3 to create chart
+	createBarChart() {
         var chartData = this.props.data;
-		var formatPercent = d3.format(".0%"), padding = 100;
+		var formatPercent = d3.format(".0%"), padding = 100, mainBarColor = '#000080', backBarColor = '#ADD8E6'  ;
 		
 		//create svg with dimensions
 		var svg = d3.select("#chartholder")
@@ -34,6 +39,7 @@ export default class Barchart extends Component{
 		
 		//prepare data to sort ascending order of percentage
 		chartData.sort(function(a, b) { return a.per_over_50k - b.per_over_50k; });
+        
 		
 		// x and y domains 
 		x.domain([0, 1]);
@@ -62,7 +68,7 @@ export default class Barchart extends Component{
         .attr('x', 0)
         .attr("height", y.bandwidth()-10)
         .attr('width', function() {return x(1);} )
-        .attr('fill', 'lightblue');
+        .attr('fill', backBarColor);
 
         //draw and color bars , over 50K blue
         g.selectAll('rect .bar')
@@ -76,7 +82,34 @@ export default class Barchart extends Component{
         .attr('x', 0)
         .attr("height", y.bandwidth()-10)
         .attr("width", function(d) { return x(d.per_over_50k); })
-        .attr('fill', 'darkblue')
+        .attr('fill', mainBarColor)
+
+        //Legend color scale
+        var color = d3.scaleOrdinal()
+        .domain(["True", "False"])
+        .range([mainBarColor,backBarColor]);
+
+        //position the legend
+        var legend = svg.selectAll(".legend")
+        .data(["Above 50K", "Below 50K"])//hard coding the labels as the datset may have or may not have but legend should be complete.
+        .enter().append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+        // draw legend colored rectangles
+        legend.append("rect")
+        .attr("x", 0)
+        .attr("y",-30)
+        .attr("width", 15)
+        .attr("height", 15)
+        .style("fill", function(d){return color(d)});
+
+        // draw legend text
+        legend.append("text")
+        .attr("x",20)
+        .attr("y", -22)
+        .attr("dy", ".35em")
+        .text(function(d) { return d;});
 
         //Label Text for axes according to choice of Education/Race
         var textLabel;
@@ -109,7 +142,7 @@ export default class Barchart extends Component{
 
 	componentDidUpdate(){
 		d3.select("#svg-chart").remove();
-		this.setContext();
+		this.createBarChart();
 	}
 	
 
