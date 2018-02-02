@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 //class to render bar chart using d3
 export default class Barchart extends Component{
     constructor(props){
-      super(props)
-      this.createBarChart = this.createBarChart.bind(this)
+        super(props)
+        this.createBarChart = this.createBarChart.bind(this)
     }
 
 	componentDidMount(){
@@ -24,7 +24,8 @@ export default class Barchart extends Component{
         .attr("id","svg-chart")
         .attr("width",760)
         .attr("height",400)
-					
+		
+
 		var margin = {top: 20, right: 20, bottom: 60, left: 10},
         width = svg.attr("width") - margin.left - margin.right,
         height = svg.attr("height") - margin.top - margin.bottom;
@@ -32,14 +33,14 @@ export default class Barchart extends Component{
         var g = svg.append("g")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        //define x & y axis range
+        //define x & y axis scales
         var x = d3.scaleLinear().range([0, width]);
         var y = d3.scaleBand().range([height, 0]);
 		
 		//prepare data to sort ascending order of percentage
 		chartData.sort(function(a, b) { return a.per_over_50k - b.per_over_50k; });
         
-		// x and y domains 
+		// x and y input domains 
 		x.domain([0, 1]);
 		y.domain(chartData.map(function(d) { return d.category; })).padding(0.1);
 
@@ -81,6 +82,19 @@ export default class Barchart extends Component{
         .attr("height", y.bandwidth()-10)
         .attr("width", function(d) { return x(d.per_over_50k); })
         .attr('fill', mainBarColor)
+        .on("end",function(){
+            //set bar labels only after bar transition ends
+            g.selectAll(".text")         
+            .data(chartData)
+            .enter()
+            .append("text")
+            .attr("class","label")
+            .attr("y", (function(d) { return y(d.category) + y.bandwidth()/4 ; }  ))
+            .attr("x", function(d) { return x(d.per_over_50k)-24; })
+            .attr("dy", ".75em")
+            .text(function(d) { return Math.trunc(d.per_over_50k *100) + "%" })
+            .attr('fill', "white")
+        });
 
         //Legend color scale
         var color = d3.scaleOrdinal()
