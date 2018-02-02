@@ -24,10 +24,7 @@ export default class Main extends Component{
 	render(){
     
     //required variable declarations    
-    var combinedData = {}, groupedData, categoryArr, percentArr = [], option,
-    labelArr = d3.keys(this.props.data[0]).filter(function(key) {//array to hold axes labels texts
-      return (key === "education_level" || key === "count")
-    }),
+    var combinedData = {}, groupedData, categoryArr, percentArr = [], option, labelArr, 
     legendLabelArr=["Above 50K", "Below 50K"];//array to hold legend label text
 
     
@@ -37,14 +34,25 @@ export default class Main extends Component{
       .key(function(d){return d.education_level;})
       .key(function(d){return d.over_50k;})
       .object(this.props.data);
+
+      //label text arrays for if option selected is education
+      labelArr = d3.keys(this.props.data[0]).filter(function(key) {//array to hold axes labels texts
+      return (key === "education_level" || key === "count")
+      });
     
       option = 0;
+
 
     } else if(this.state.selectedOption === "1"){
       groupedData = d3.nest()
       .key(function(d){return d.race;})
       .key(function(d){return d.over_50k;})
       .object(this.props.data);
+
+      //label text arrays for if option selected is race
+      labelArr = d3.keys(this.props.data[0]).filter(function(key) {//array to hold axes labels texts
+      return (key === "race" || key === "count")
+      });
 
       option = 1;
     }  
