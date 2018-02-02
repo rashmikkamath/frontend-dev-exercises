@@ -15,7 +15,8 @@ export default class Barchart extends Component{
 
     //pass reins to d3 to create chart
 	createBarChart() {
-        var chartData = this.props.data;
+
+        var chartData = this.props.data, labelTextArr = this.props.labelTextArr;
 		var formatPercent = d3.format(".0%"), padding = 100, mainBarColor = '#000080', backBarColor = '#ADD8E6'  ;
 		
 		//create svg with dimensions
@@ -25,7 +26,6 @@ export default class Barchart extends Component{
         .attr("width",760)
         .attr("height",400)
 		
-
 		var margin = {top: 20, right: 20, bottom: 60, left: 10},
         width = svg.attr("width") - margin.left - margin.right,
         height = svg.attr("height") - margin.top - margin.bottom;
@@ -39,9 +39,12 @@ export default class Barchart extends Component{
 		
 		//prepare data to sort ascending order of percentage
 		chartData.sort(function(a, b) { return a.per_over_50k - b.per_over_50k; });
-        
-		// x and y input domains 
+
+		//scaleLinear domain requirs at least two values, min and max       
 		x.domain([0, 1]);
+
+        // scaleBand domain should be an array of specific values
+        // in our case, we want to use categories
 		y.domain(chartData.map(function(d) { return d.category; })).padding(0.1);
 
 		//draw the x axis  
@@ -103,7 +106,7 @@ export default class Barchart extends Component{
 
         //position the legend
         var legend = svg.selectAll(".legend")
-        .data(["Above 50K", "Below 50K"])//hard coding the labels as the datset may have or may not have but legend should be complete.
+        .data([labelTextArr[2],labelTextArr[3]])//label text derived from label data passed from parent
         .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
@@ -122,27 +125,19 @@ export default class Barchart extends Component{
         .attr("y", -22)
         .attr("dy", ".35em")
         .text(function(d) { return d;});
-
-        //Label Text for axes according to choice of Education/Race
-        var textLabel;
-        if (this.props.flag === 0){
-          textLabel = "Education";
-        }else if(this.props.flag === 1){
-          textLabel = "Race";
-        }
-
+        
         //add the axes labels
         g.append("text")
         .classed('labeltext',true)
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (-margin.left - 100) +","+(height/2)+")rotate(-90)")  // text is drawn off the screen top left, move down and out and rotate
-        .text(textLabel);
+        .text(labelTextArr[0]);
 
         g.append("text")
         .classed('labeltext',true)
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (width/2) +","+(height+(padding/2))+")")  // centre below axis
-        .text("Count");
+        .text(labelTextArr[1]);
 	
 	}
 
@@ -159,5 +154,6 @@ export default class Barchart extends Component{
 }
 Barchart.propTypes = {
   data: PropTypes.array.isRequired,
+  labelTextArr : PropTypes.array,
   flag : PropTypes.number
 };

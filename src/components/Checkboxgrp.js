@@ -8,10 +8,10 @@ export default class Checkboxgrp extends Component{
 			<form>
 				<div>
 					<div className="checkbox">
-						<label><input type="radio" value="education" checked={this.props.selectedOption === "education"} onChange={this.props.handleOptionChange}/> Education</label>
+						<label><input type="radio" value = "0" checked ={this.props.selectedOption === "0"} onChange={this.props.handleOptionChange}/> Education</label>
 					</div>
 					<div className="checkbox">
-						<label><input className ="checkbox" type="radio" value="race" checked={this.props.selectedOption ==="race"} onChange={this.props.handleOptionChange}/> Race</label>
+						<label><input className ="checkbox" type="radio" value = "1" checked={this.props.selectedOption === "1"} onChange={this.props.handleOptionChange}/> Race</label>
 					</div>
 					</div>
 					</form>
