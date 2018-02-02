@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from "d3";
 import PropTypes from 'prop-types';
 
-
+//class to render bar chart using d3
 export default class Barchart extends Component{
     constructor(props){
       super(props)
@@ -10,7 +10,6 @@ export default class Barchart extends Component{
     }
 
 	componentDidMount(){
-
 		this.createBarChart();
 	}
 
@@ -40,7 +39,6 @@ export default class Barchart extends Component{
 		//prepare data to sort ascending order of percentage
 		chartData.sort(function(a, b) { return a.per_over_50k - b.per_over_50k; });
         
-		
 		// x and y domains 
 		x.domain([0, 1]);
 		y.domain(chartData.map(function(d) { return d.category; })).padding(0.1);
@@ -56,7 +54,7 @@ export default class Barchart extends Component{
         .attr("class", "y axis")
         .call(d3.axisLeft(y));
            
-            //draw & color background bar,less than 50K pink
+        //draw & color background bar,less than 50K 
         g.selectAll('rect .background')
         .data(chartData)
         .enter()
@@ -70,7 +68,7 @@ export default class Barchart extends Component{
         .attr('width', function() {return x(1);} )
         .attr('fill', backBarColor);
 
-        //draw and color bars , over 50K blue
+        //draw and color bars , over 50K 
         g.selectAll('rect .bar')
         .data(chartData)
         .enter()
@@ -137,15 +135,13 @@ export default class Barchart extends Component{
 	render(){
 		return(
 			<div id = "chartholder"></div>
-			)
+		)
 	}
 
 	componentDidUpdate(){
 		d3.select("#svg-chart").remove();
 		this.createBarChart();
 	}
-	
-
 }
 Barchart.propTypes = {
   data: PropTypes.array.isRequired,
